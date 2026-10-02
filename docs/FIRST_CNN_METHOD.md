@@ -1,6 +1,6 @@
 # First small CNN: frozen numerical experiment
 
-The first learned estimator directly predicts acquisition-resolution ADC. It uses the same original geometric simulator and reference definition as the conventional pilot. This is a fixed-budget learning experiment; uncertainty calibration and stopping are separate, unimplemented work.
+The first learned estimator directly predicts acquisition-resolution ADC. It uses the same original geometric simulator and reference definition as the conventional pilot. The frozen experiment has now been executed; see [measured results](FIRST_CNN_RESULTS.md). This is a fixed-budget learning experiment; uncertainty calibration and stopping are separate, unimplemented work.
 
 ## Measurement and supervised target
 
@@ -18,7 +18,7 @@ The frozen CPU execution uses two threads and deterministic PyTorch operations. 
 
 ## Independent groups and held-out tests
 
-The new cohort has 144 IDs (`cnn-000`…`cnn-143`), with seed 20261002 and 64 training, 16 validation, 32 reserved calibration and 32 final-test geometry groups. Split before generating derivatives; no old pilot test IDs are reused. All focal/noise variants of an anatomy stay in its role. Training uses four noise draws per condition and validation two; final evaluation uses one. Calibration groups are not generated or inspected.
+The new cohort has 144 IDs (`cnn-000`…`cnn-143`), with seed 20261002 and 64 training, 16 validation, 32 reserved calibration and 32 final-test geometry groups. Split before generating derivatives; no old pilot test IDs are reused. All focal/noise variants of an anatomy stay in its role. Training uses four noise draws per condition and validation two; final evaluation uses one. Configuration validation checks noiseless geometry validity across all IDs, but no calibration acquisition examples are generated or used for training, selection or evaluation.
 
 Training/validation use circles with radius 0.5/1.5 mm, ADC change±0.0003 mm²/s and reference SNR 5/20. Ellipses are registered before final evaluation and are absent from training/validation. Their nominal area matches the circle, with major/minor axis ratio 2.25. Both common and independent healthy/perturbed noise pairing are tested. Shape and pairing registries are explicit in the saved configuration.
 

@@ -1,6 +1,6 @@
 # Controlled simulation and quantitative evaluation
 
-Status: CPU simulation/conventional-baseline pilot implemented and independently reviewed, 2026-10-02. Broader denoising, uncertainty, unfamiliar-regime evaluation, and stopping protocol remain proposed. `configs/pilot.json` is executable; the broader example configuration remains incomplete. Results are recorded separately in `PILOT_RESULTS.md`.
+Status: CPU simulation/conventional-baseline pilot and the first small CNN experiment implemented and independently reviewed, 2026-10-02. The CNN evaluated prespecified unfamiliar ellipses and both noise pairings on 32 new test geometries; it reduced tissue RMSE while attenuating focal changes. Broader denoising, anatomical/acquisition shifts, uncertainty and stopping remain proposed. `configs/pilot.json` and `configs/first_cnn.json` are executable; the broader example configuration remains incomplete. Results are recorded separately in [PILOT_RESULTS.md](PILOT_RESULTS.md) and [FIRST_CNN_RESULTS.md](FIRST_CNN_RESULTS.md).
 
 ## Simulation and reference
 
@@ -21,6 +21,8 @@ A generated toy phantom supports initial numerical checks. The executable pilot 
 Coarse tissue/focal evaluation masks include every voxel with a positive fine-resolution fraction. This includes boundary partial volume. Record discrete focal area, coarse focal fraction, and reference contrast separately from nominal radius and assigned contrast. The two paired pools use identical complex noise by default, with independent pairing available as an explicitly configured sensitivity run. Budgets use prefixes of one maximum-budget pool per case. Meaningful anatomy holdouts need sufficient independent anatomical models with verified use terms.
 
 ## Conventional baselines
+
+The first learned-method milestone uses the following conventional estimators unchanged, at four repetitions per b-value. Its observed-input, supervised-target and validation-selection contracts are in [FIRST_CNN_METHOD.md](FIRST_CNN_METHOD.md).
 
 - Average magnitude repetitions separately at each b-value, then fit ADC. With positive signals at two distinct b-values, `D = log(S(b1)/S(b2)) / (b2-b1)`. Explicitly report invalid signals, negative estimates, masks, exclusions, and constraints; avoid silent clipping.
 - Fit repetition-level signals under the simulated magnitude-noise law; document noise-scale knowledge/estimation and convergence. A magnitude average does not generally retain the single-repetition noise law.

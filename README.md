@@ -8,7 +8,9 @@ This project benchmarks quantitative fidelity: whether methods preserve known fo
 
 The first CPU pilot implements original geometric phantoms, signal-level partial volume, complex noise before magnitude, conventional ADC estimation, anatomy-group splits, signed focal-change evaluation, and reproducible tables/plots. It compares magnitude averaging plus log-linear fitting with repetition-level Rician maximum likelihood using known simulated noise scale.
 
-The pilot is a numerical benchmark, with two held-out toy anatomies. Published denoising comparators, anatomical-resource experiments, learned estimation, calibrated uncertainty, and adaptive stopping remain to be implemented. No patient or external anatomical datasets have been downloaded. See [pilot results and limitations](docs/PILOT_RESULTS.md).
+The first small CNN is now trained: 2,641 parameters, three optimization seeds, and 32 held-out numerical geometry groups. It reduced tissue ADC RMSE, but mean signed focal recovery was only 23–30% at SNR5 and 49–55% at SNR20 for familiar circles under common noise. This is evidence that lower global error can conceal focal attenuation. See the [CNN method](docs/FIRST_CNN_METHOD.md) and [measured results](docs/FIRST_CNN_RESULTS.md).
+
+The original conventional pilot used two held-out toy anatomies; see its [results and limitations](docs/PILOT_RESULTS.md). Published denoising comparators, anatomical-resource experiments, calibrated uncertainty, and adaptive stopping remain to be implemented. No patient or external anatomical datasets have been downloaded.
 
 The confirmed repository name is `CB9683/adc-fidelity-bench`. The code uses the [MIT license](LICENSE); dataset and other asset permissions remain separate. [Citation metadata](CITATION.cff) initially identifies the owner by the GitHub handle `CB9683`; fuller authorship and release metadata can be added before a research release.
 
@@ -16,7 +18,7 @@ The confirmed repository name is `CB9683/adc-fidelity-bench`. The code uses the 
 
 1. Controlled simulations with known parameters and focal abnormalities; start with `S(b) = S0 exp(-bD)`.
 2. Partial volume applied to diffusion signals, and complex noise before magnitude formation.
-3. Quantitative comparisons of averaging plus fitting, noise-aware fitting, published denoising, and later a small learned method.
+3. Quantitative comparisons of averaging plus fitting, noise-aware fitting and a small learned method; published denoising remains planned.
 4. ADC error, focal-change recovery, uncertainty calibration, false confidence, and repetitions saved at matched error risk.
 5. Optional fastMRI Prostate retrospective validation after access approval, with independent input/reference repetitions and a noisy-reference interpretation.
 
@@ -44,20 +46,37 @@ Outputs include the exact configuration, anatomy assignments, deterministic seed
 
 The default paired cases share complex noise to isolate changes with lower variance. Set `paired_noise` to `independent` for sensitivity analysis. Neither mode represents measured longitudinal patient data. Rician fits can have an unbounded ADC optimum at the magnitude noise floor, or a zero-amplitude optimum that leaves ADC unidentified. Those ADC values are invalid even if the numerical optimizer converged. Both policies are tested explicitly.
 
+## Train the first small CNN
+
+PyTorch is optional: baseline installation and commands do not require it. The exact learning lock is scoped to the tested Python 3.13/macOS ARM64 CPU environment. On that environment:
+
+```sh
+python3.13 -m venv .venv
+.venv/bin/python -m pip install -r requirements-learning-lock.txt
+.venv/bin/python -m pip install --no-build-isolation --no-deps -e .
+.venv/bin/python -m pytest
+.venv/bin/python -m adc_fidelity_bench train-cnn --config configs/first_cnn.json --output outputs/first-cnn
+```
+
+For other supported environments, install the `dev,train` extras and record the resolved versions; Linux CI uses the official PyTorch CPU wheel index. Choose a fresh output directory for every run. The frozen configuration uses four repetitions per b-value, eight total acquisitions, a 64/16/32/32 training/validation/reserved-calibration/test split, and three validation-selected checkpoints. Calibration groups remain unused.
+
+Outputs include losses, selected checkpoints, config/source/checkpoint hashes, group assignments, matched conventional/CNN comparisons and quantitative plots. Read the [method and full reproduction instructions](docs/FIRST_CNN_METHOD.md) and [measured fidelity limitations](docs/FIRST_CNN_RESULTS.md) before interpreting finite predictions as trustworthy measurements.
+
 ## Repository layout
 
 ```text
-src/adc_fidelity_bench/  Simulation, estimators, splits, metrics, CLI, reporting
-configs/                Executable pilot and broader protocol template
+src/adc_fidelity_bench/  Simulation, estimators, CNN training, metrics, CLI, reporting
+configs/                Executable pilot/CNN experiments and protocol template
 tests/                  Numerical, integration, and data-boundary tests
 docs/                   Protocol, data boundaries, sources, and plans
 pyproject.toml          Package/build specification
 requirements-lock.txt   Scoped exact dependency versions
+requirements-learning-lock.txt  Scoped learning environment including PyTorch
 LICENSE                 MIT code license
 CITATION.cff            Initial software citation metadata
 ```
 
-Real data, anatomical downloads, local manifests, checkpoints, and generated run outputs belong outside Git. Original toy-pilot summary figures may accompany reviewed documentation. See [data layout](docs/DATA_LAYOUT.md).
+Real data, anatomical downloads, local manifests, checkpoints, and generated run outputs belong outside Git. Original numerical-summary figures may accompany reviewed documentation. See [data layout](docs/DATA_LAYOUT.md).
 
 ## Reproducibility and claims
 
