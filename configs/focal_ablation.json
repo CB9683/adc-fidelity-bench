@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "simulation": {
+    "schema_version": 1,
+    "seed": 2026100202,
+    "anatomy_ids": [
+      "abl-000",
+      "abl-001",
+      "abl-002",
+      "abl-003",
+      "abl-004",
+      "abl-005",
+      "abl-006",
+      "abl-007",
+      "abl-008",
+      "abl-009",
+      "abl-010",
+      "abl-011",
+      "abl-012",
+      "abl-013",
+      "abl-014",
+      "abl-015",
+      "abl-016",
+      "abl-017",
+      "abl-018",
+      "abl-019",
+      "abl-020",
+      "abl-021",
+      "abl-022",
+      "abl-023",
+      "abl-024",
+      "abl-025",
+      "abl-026",
+      "abl-027",
+      "abl-028",
+      "abl-029",
+      "abl-030",
+      "abl-031",
+      "abl-032",
+      "abl-033",
+      "abl-034",
+      "abl-035",
+      "abl-036",
+      "abl-037",
+      "abl-038",
+      "abl-039",
+      "abl-040",
+      "abl-041",
+      "abl-042",
+      "abl-043",
+      "abl-044",
+      "abl-045",
+      "abl-046",
+      "abl-047",
+      "abl-048",
+      "abl-049",
+      "abl-050",
+      "abl-051",
+      "abl-052",
+      "abl-053",
+      "abl-054",
+      "abl-055",
+      "abl-056",
+      "abl-057",
+      "abl-058",
+      "abl-059",
+      "abl-060",
+      "abl-061",
+      "abl-062",
+      "abl-063",
+      "abl-064",
+      "abl-065",
+      "abl-066",
+      "abl-067",
+      "abl-068",
+      "abl-069",
+      "abl-070",
+      "abl-071",
+      "abl-072",
+      "abl-073",
+      "abl-074",
+      "abl-075",
+      "abl-076",
+      "abl-077",
+      "abl-078",
+      "abl-079",
+      "abl-080",
+      "abl-081",
+      "abl-082",
+      "abl-083",
+      "abl-084",
+      "abl-085",
+      "abl-086",
+      "abl-087",
+      "abl-088",
+      "abl-089",
+      "abl-090",
+      "abl-091",
+      "abl-092",
+      "abl-093",
+      "abl-094",
+      "abl-095",
+      "abl-096",
+      "abl-097",
+      "abl-098",
+      "abl-099",
+      "abl-100",
+      "abl-101",
+      "abl-102",
+      "abl-103",
+      "abl-104",
+      "abl-105",
+      "abl-106",
+      "abl-107",
+      "abl-108",
+      "abl-109",
+      "abl-110",
+      "abl-111",
+      "abl-112",
+      "abl-113",
+      "abl-114",
+      "abl-115",
+      "abl-116",
+      "abl-117",
+      "abl-118",
+      "abl-119",
+      "abl-120",
+      "abl-121",
+      "abl-122",
+      "abl-123",
+      "abl-124",
+      "abl-125",
+      "abl-126",
+      "abl-127",
+      "abl-128",
+      "abl-129",
+      "abl-130",
+      "abl-131",
+      "abl-132",
+      "abl-133",
+      "abl-134",
+      "abl-135",
+      "abl-136",
+      "abl-137",
+      "abl-138",
+      "abl-139",
+      "abl-140",
+      "abl-141",
+      "abl-142",
+      "abl-143"
+    ],
+    "split_counts": {
+      "train": 64,
+      "validation": 16,
+      "calibration": 32,
+      "test": 32
+    },
+    "evaluation_splits": [
+      "test"
+    ],
+    "fine_shape": [
+      16,
+      16
+    ],
+    "fine_spacing_mm": 0.5,
+    "partial_volume_factor": 2,
+    "b_values": [
+      0,
+      1000
+    ],
+    "budgets": [
+      4
+    ],
+    "snr": [
+      5,
+      20
+    ],
+    "focal_radius_mm": [
+      0.5,
+      1.5
+    ],
+    "delta_adc": [
+      -0.0003,
+      -0.00015,
+      0,
+      0.00015,
+      0.0003
+    ],
+    "focal_shapes": [
+      "circle"
+    ],
+    "noise_realizations": 1,
+    "paired_noise": "independent",
+    "methods": [
+      "average_log",
+      "rician_mle"
+    ],
+    "rician_maxiter": 200,
+    "recovery_epsilon": 1e-08
+  },
+  "training": {
+    "seeds": [
+      11,
+      22,
+      33
+    ],
+    "epochs": 80,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "device": "cpu",
+    "num_threads": 2,
+    "train_noise_realizations": 2,
+    "validation_noise_realizations": 2
+  },
+  "evaluation": {
+    "focal_shapes": [
+      "circle",
+      "ellipse"
+    ],
+    "paired_noise": [
+      "independent",
+      "common"
+    ],
+    "noise_realizations": 3
+  },
+  "ablation": {
+    "training_regimes": [
+      "varied"
+    ],
+    "evaluation_regimes": [
+      "original",
+      "varied"
+    ],
+    "change_loss_weight": 1.0,
+    "selection_change_weight": 1.0,
+    "null_threshold_adc": 0.0001,
+    "adc_inner_range": [
+      0.0007,
+      0.0012
+    ],
+    "adc_outer_range": [
+      0.0013,
+      0.0019
+    ],
+    "s0_inner_range": [
+      0.65,
+      0.95
+    ],
+    "s0_outer_range": [
+      0.85,
+      1.15
+    ]
+  }
+}

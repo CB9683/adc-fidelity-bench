@@ -121,3 +121,36 @@ jobs:
           assert {r['anatomy_id'] for r in rows} == set(m['splits']['test'])
           assert (out/'training_curve.png').stat().st_size > 0
           PY
+      - name: Exercise installed four-cell ablation CLI with null controls
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path('configs/focal_ablation.json').read_text())
+          c['simulation'].update(anatomy_ids=[f'abl-ci-{i}' for i in range(8)],
+              split_counts=dict(train=2, validation=2, calibration=2, test=2),
+              fine_shape=[8,8], budgets=[2], snr=[20], focal_radius_mm=[0.5],
+              delta_adc=[-0.0003,0,0.0003])
+          c['training'].update(seeds=[11], epochs=2, batch_size=8,
+              train_noise_realizations=1, validation_noise_realizations=1)
+          c['evaluation'].update(focal_shapes=['circle'], paired_noise=['independent'], noise_realizations=1)
+          Path('outputs/ablation-ci-config.json').write_text(json.dumps(c))
+          PY
+          adc-fidelity-bench ablate-cnn --config outputs/ablation-ci-config.json --output outputs/ablation-ci-smoke
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+          out = Path('outputs/ablation-ci-smoke')
+          m = json.loads((out/'manifest.json').read_text())
+          rows = list(csv.DictReader((out/'cases.csv').open()))
+          assert m['status']=='complete' and not m['calibration_used']
+          assert len(m['checkpoints'])==4 and len(rows)==72
+          assert {r['regime'] for r in rows}=={'original','varied'}
+          assert {r['anatomy_id'] for r in rows}==set(m['splits']['test'])
+          null = [r for r in rows if r['case_kind']=='null']
+          assert len(null)==24 and all(r['recovery_ratio']=='' for r in null)
+          assert all(r['null_alarm_or_invalid_fraction']!='' for r in null)
+          assert (out/'tradeoff.png').stat().st_size>0
+          assert (out/'null_controls.png').stat().st_size>0
+          PY
