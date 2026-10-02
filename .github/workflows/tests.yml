@@ -70,3 +70,54 @@ jobs:
           assert (output / 'error_by_budget.png').stat().st_size > 0
           assert (output / 'focal_recovery.png').stat().st_size > 0
           PY
+
+  learning-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: requirements-lock.txt
+      - name: Install numerical dependencies and CPU PyTorch
+        run: |
+          python -m pip install -r requirements-lock.txt
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.14.1
+          python -m pip install --no-build-isolation --no-deps .
+      - name: Run all tests including actual neural training and reload
+        run: python -m pytest
+      - name: Exercise installed training CLI on a tiny independent cohort
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path('configs/first_cnn.json').read_text())
+          c['simulation'].update(anatomy_ids=[f'ci-{i}' for i in range(8)],
+              split_counts=dict(train=2, validation=2, calibration=2, test=2),
+              fine_shape=[8,8], budgets=[2], snr=[20], focal_radius_mm=[0.5])
+          c['training'].update(seeds=[11], epochs=2, batch_size=8,
+              train_noise_realizations=1, validation_noise_realizations=1)
+          c['evaluation'].update(focal_shapes=['circle'], paired_noise=['common'])
+          Path('outputs').mkdir(exist_ok=True)
+          Path('outputs/cnn-ci-config.json').write_text(json.dumps(c))
+          PY
+          adc-fidelity-bench train-cnn --config outputs/cnn-ci-config.json --output outputs/cnn-ci-smoke
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+          out = Path('outputs/cnn-ci-smoke')
+          m = json.loads((out/'manifest.json').read_text())
+          rows = list(csv.DictReader((out/'cases.csv').open()))
+          assert m['status'] == 'complete' and not m['calibration_used']
+          assert len(rows) == 12 and len(m['checkpoints']) == 1
+          assert {r['method'] for r in rows} == {'average_log','rician_mle','cnn_seed11'}
+          assert {r['anatomy_id'] for r in rows} == set(m['splits']['test'])
+          assert (out/'training_curve.png').stat().st_size > 0
+          PY

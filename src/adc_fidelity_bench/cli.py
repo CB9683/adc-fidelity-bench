@@ -13,11 +13,23 @@ def main(argv=None):
     benchmark = commands.add_parser('benchmark', help='Run a controlled CPU simulation')
     benchmark.add_argument('--config', required=True, type=Path)
     benchmark.add_argument('--output', required=True, type=Path)
+    learning = commands.add_parser('train-cnn', help='Train and evaluate the first small ADC CNN')
+    learning.add_argument('--config', required=True, type=Path)
+    learning.add_argument('--output', required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         with args.config.open() as stream:
             config = json.load(stream)
-        result = run_benchmark(config, args.output)
+        if args.command == 'train-cnn':
+            try:
+                from .learning.experiment import run_cnn_experiment
+            except ModuleNotFoundError as error:
+                if error.name != 'torch':
+                    raise
+                parser.exit(2, 'error: PyTorch is optional; install the train extra or requirements-learning-lock.txt\n')
+            result = run_cnn_experiment(config, args.output)
+        else:
+            result = run_benchmark(config, args.output)
     except (OSError, ValueError, TypeError) as error:
         parser.exit(2, f'error: {error}\n')
     n_anatomies = result['manifest']['n_evaluated_anatomies']
