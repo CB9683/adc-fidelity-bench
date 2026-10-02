@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+message: "Template only: approve authors and finalize release details before citation."
+type: software
+title: "Trustworthy ADC estimation with fewer diffusion acquisitions"
+authors:
+  - name: "REPLACE_WITH_APPROVED_AUTHOR"
+abstract: "A proposed benchmark for quantitative ADC fidelity, focal-change preservation, and uncertainty under reduced diffusion acquisition budgets."

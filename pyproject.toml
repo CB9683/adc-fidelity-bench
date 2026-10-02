@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adc-fidelity-bench"
+version = "0.1.0.dev0"
+description = "Simulation benchmark for trustworthy ADC estimation with fewer diffusion acquisitions"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.urls]
+Repository = "https://github.com/CB9683/adc-fidelity-bench"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["adc_fidelity_bench*"]
+namespaces = false
+
+[tool.setuptools]
+include-package-data = false

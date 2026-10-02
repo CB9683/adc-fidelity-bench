@@ -1,0 +1,50 @@
+{
+  "schema_version": "draft-1",
+  "status": "proposed_not_executable",
+  "seed": 2026,
+  "paths": {
+    "anatomy_root": null,
+    "private_manifest": null,
+    "output_root": null
+  },
+  "simulation": {
+    "signal_model": "monoexponential",
+    "adc_unit": "mm^2/s",
+    "b_value_unit": "s/mm^2",
+    "b_values_s_per_mm2": [0.0, 1000.0],
+    "repetitions_per_b_value": [1, 2, 4, 8],
+    "generator_reference_S0": 1.0,
+    "estimator_signal_normalization": null,
+    "snr_definition": "reference_S0_divided_by_sigma_per_complex_component",
+    "snr_values": [5.0, 10.0, 20.0, 40.0],
+    "noise_model": "independent_gaussian_complex_components_then_magnitude",
+    "coil_model": "single_coil_image_domain_initial_approximation",
+    "partial_volume": "mix_and_resample_diffusion_signals_before_ADC_fitting",
+    "tissue_parameters": null,
+    "voxel_spacing_mm": null,
+    "focal_abnormalities": {
+      "shape_set": null,
+      "size_mm": null,
+      "delta_adc_mm2_per_s": null
+    }
+  },
+  "splits": {
+    "group_key": "anatomy_id",
+    "training_anatomy_ids": [],
+    "validation_anatomy_ids": [],
+    "calibration_anatomy_ids": [],
+    "test_anatomy_ids": [],
+    "held_out_perturbation_regimes": [],
+    "held_out_acquisition_regimes": []
+  },
+  "evaluation": {
+    "reference": "ADC_fit_of_noiseless_acquisition_resolution_signals",
+    "primary_endpoint": "focal_ADC_change_recovery",
+    "stopping_error_unit": "mm^2/s",
+    "stopping_error_aggregation": null,
+    "stopping_tolerances_mm2_per_s": [],
+    "risk_levels": [],
+    "calibration_method": null,
+    "sequential_coverage_strategy": null
+  }
+}

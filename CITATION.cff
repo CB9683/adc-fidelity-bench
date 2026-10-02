@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata. This is an initial scaffold, not a validated scientific release."
+type: software
+title: "ADC Fidelity Benchmark"
+authors:
+  - name: "CB9683"
+repository-code: "https://github.com/CB9683/adc-fidelity-bench"
+version: "0.1.0.dev0"
+license: MIT
+abstract: "A simulation-first research project for quantitative ADC fidelity, focal-change preservation, and uncertainty under reduced diffusion acquisition budgets. Scientific methods and results are not implemented in this initial scaffold."
