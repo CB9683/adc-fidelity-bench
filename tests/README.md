@@ -1,15 +1,17 @@
-# Planned scientific tests
+# Scientific verification
 
-There are no scientific tests yet. Package/build checks do not validate ADC science. Before implementing each numerical/data component, write meaningful known-answer and adversarial tests for:
+Create a local environment and run the test suite from the repository root:
 
-- signal generation, units, and zero-noise ADC recovery;
-- nonpositive signals, degenerate b-values, fitting failures, and explicit exclusion policies;
-- signal-level partial volume, including a mixture differing from blurred ADC;
-- complex-to-magnitude noise, seed reproducibility, limiting/noise-floor behavior;
-- tensor axes for b-values, repetitions, space, and later direction/coil;
-- whole-anatomy/participant split isolation and train-only transforms;
-- disjoint method-input/reference repetition IDs;
-- focal-change signs, near-zero denominators, masks, and anatomy-level aggregation;
-- coverage, false-confidence denominators, sequential stopping, and inclusion of non-stoppers in savings.
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-lock.txt
+python -m pip install --no-build-isolation -e '.[dev]'
+python -m pytest
+```
 
-Add pytest and numerical dependencies with a reproducible environment at that milestone. Avoid tests that merely assert file existence or mirror constants.
+The lock records the tested numerical/test dependencies and build tooling for Python 3.11+ on macOS/Linux. It excludes unrelated installed packages. GitHub CI is configured to check Python 3.11 and 3.13; only the locally executed versions may be claimed as locally verified. A pinned version file does not verify downloaded artifact hashes.
+
+Known-answer and adversarial tests cover monoexponential units and zero-noise recovery, signal-level mixtures differing from averaged tissue ADC, complex Gaussian noise before magnitude formation, seeded geometry and repetition axes, conventional ADC fits and optimizer failures, whole-anatomy split isolation, and signed focal-change recovery with invalid-estimate counts. Repository boundary checks keep private data excluded while allowing the source-code data package.
+
+The generated phantom is original toy geometry, and these checks do not establish anatomical realism or clinical performance. Later learned estimation, disjoint patient-data input/reference repeats, calibrated interval coverage, sequential stopping, and repetition savings require their own scientific tests before implementation claims.

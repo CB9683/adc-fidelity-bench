@@ -29,7 +29,7 @@ credentials*
 secrets*
 
 # External data, local manifests, and generated outputs
-data/
+/data/
 datasets/
 anatomy/
 simulations/

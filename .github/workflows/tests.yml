@@ -1,0 +1,72 @@
+name: Scientific tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-lock.txt
+      - name: Install locked dependencies and package
+        run: |
+          python -m pip install -r requirements-lock.txt
+          python -m pip install --no-build-isolation --no-deps .
+      - name: Run scientific and integration tests
+        run: python -m pytest
+      - name: Exercise installed CLI with a small CPU benchmark
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          config = {
+              'schema_version': 1, 'seed': 17,
+              'anatomy_ids': ['toy-a', 'toy-b'],
+              'split_counts': {'train': 1, 'validation': 0, 'calibration': 0, 'test': 1},
+              'evaluation_splits': ['test'], 'fine_shape': [8, 8],
+              'fine_spacing_mm': 0.5, 'partial_volume_factor': 2,
+              'b_values': [0, 1000], 'budgets': [1, 2], 'snr': [20],
+              'focal_radius_mm': [0.5], 'delta_adc': [-0.0003, 0.0003],
+              'focal_shapes': ['circle'], 'noise_realizations': 1,
+              'paired_noise': 'common', 'methods': ['average_log', 'rician_mle'],
+              'rician_maxiter': 200, 'recovery_epsilon': 1e-8,
+          }
+          Path('outputs').mkdir(exist_ok=True)
+          Path('outputs/ci-config.json').write_text(json.dumps(config))
+          PY
+          adc-fidelity-bench benchmark --config outputs/ci-config.json --output outputs/ci-smoke
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+          output = Path('outputs/ci-smoke')
+          rows = list(csv.DictReader((output / 'cases.csv').open()))
+          manifest = json.loads((output / 'manifest.json').read_text())
+          assert len(rows) == 8
+          assert {row['anatomy_id'] for row in rows} == set(manifest['splits']['test'])
+          assert not {row['anatomy_id'] for row in rows} & set(manifest['splits']['train'])
+          assert all(int(row['total_acquisitions']) == 2 * int(row['budget_per_b']) for row in rows)
+          assert all(int(row['n_requested']) == int(row['n_valid']) + int(row['n_invalid']) for row in rows)
+          assert list(csv.DictReader((output / 'summary.csv').open()))
+          assert (output / 'error_by_budget.png').stat().st_size > 0
+          assert (output / 'focal_recovery.png').stat().st_size > 0
+          PY

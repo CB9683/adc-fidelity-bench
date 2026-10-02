@@ -1,6 +1,6 @@
 # Foundation verification record
 
-Date: 2026-10-02. Scope: initial scaffold and proposed protocol, not scientific validation.
+Date: 2026-10-02. Scope: historical initial scaffold and proposed protocol, not scientific validation. The subsequent executable CPU implementation and numerical evidence are recorded in [pilot results](PILOT_RESULTS.md); statements below describe their original verification stage.
 
 The outcomes below record the original foundation checks, performed with the `adc-deep-learning` distribution and `adc_deep_learning` import before a code license was selected. They are historical results, not verification of the subsequent rename. The user has since confirmed `CB9683/adc-fidelity-bench` and the MIT code license; the current import is `adc_fidelity_bench`. The renamed package and new license/citation files require their own verification before release.
 

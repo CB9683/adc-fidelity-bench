@@ -1,6 +1,6 @@
 # Controlled simulation and quantitative evaluation
 
-Status: proposed for review; no experiments have run. The example configuration is explicitly non-executable until missing parameters are fixed.
+Status: CPU simulation/conventional-baseline pilot implemented and independently reviewed, 2026-10-02. Broader denoising, uncertainty, unfamiliar-regime evaluation, and stopping protocol remain proposed. `configs/pilot.json` is executable; the broader example configuration remains incomplete. Results are recorded separately in `PILOT_RESULTS.md`.
 
 ## Simulation and reference
 
@@ -16,7 +16,9 @@ The initial isotropic model does not represent all tissue diffusion or scanner a
 
 Proposed illustrative b-values: `[0, 1000] s/mm^2`; repetition counts: `[1, 2, 4, 8]` **per b-value**; reference SNR: `[5, 10, 20, 40]`; seed: `2026`. These are exploratory simulation choices, not a clinical protocol or fastMRI acquisition assertion. Set tissue parameters, spatial resolution, focal geometry/contrasts, and split allocation before generating the pilot.
 
-A generated toy phantom supports initial numerical checks. Meaningful anatomy holdouts need sufficient independent anatomical models with verified use terms.
+A generated toy phantom supports initial numerical checks. The executable pilot selects SNR `[5,20]`, six original 16×16 geometries (train/validation/calibration/test counts `1/1/2/2`), 0.5 mm fine spacing, and 2×2 box averaging to 1 mm acquisition spacing. Synthetic ADC values are 0.0009/0.0016 mm²/s and S0 values 0.8/1.0. Circle radii are 0.5/1.5 mm; assigned focal contrasts are ±0.0003 mm²/s. These numerical choices are declared assumptions, not literature-derived biological ranges. Only test geometries are evaluated; the other split roles reserve future work and imply no training or calibration has occurred.
+
+Coarse tissue/focal evaluation masks include every voxel with a positive fine-resolution fraction. This includes boundary partial volume. Record discrete focal area, coarse focal fraction, and reference contrast separately from nominal radius and assigned contrast. The two paired pools use identical complex noise by default, with independent pairing available as an explicitly configured sensitivity run. Budgets use prefixes of one maximum-budget pool per case. Meaningful anatomy holdouts need sufficient independent anatomical models with verified use terms.
 
 ## Conventional baselines
 
@@ -25,7 +27,11 @@ A generated toy phantom supports initial numerical checks. Meaningful anatomy ho
 - Select published signal-domain denoising comparators compatible with the available repetitions, noise assumptions, and dimensionality. Record version, settings, adaptation, and failure cases.
 - Choose the learned estimator/denoiser only after contracts, metrics, and conventional baselines are tested.
 
-The conventional equation follows the [QIBA DWI/ADC profile](https://qibawiki.rsna.org/images/b/b0/QIBA_DWIProfile_Stage3_15Dec2022_v3.pdf), Appendix E.1. Noise-aware implementation details remain to be reviewed.
+The conventional equation follows the [QIBA DWI/ADC profile](https://qibawiki.rsna.org/images/b/b0/QIBA_DWIProfile_Stage3_15Dec2022_v3.pdf), Appendix E.1. The implemented noise-aware comparator fits nonnegative S0/ADC from individual magnitudes, with known scalar simulated sigma, using the Rice likelihood and scaled Bessel functions. See the primary [SciPy Rice distribution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rice.html) and [scaled I0](https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.i0e.html) documentation. Inputs determine initialization and amplitude normalization; reference maps and masks enter evaluation only.
+
+For two b-values, if the high-b independent Rice amplitude MLE is zero (`mean(magnitude²) <= 2 sigma²`), the ADC optimum is unbounded or unidentified. Return invalid/NaN ADC and preserve numerical convergence as a separate diagnostic. A finite optimizer return alone is insufficient. The reusable fitter's multi-b boundary check is sufficient rather than a general identifiability guarantee; the executable pilot requires exactly two b-values. Log-linear fits retain negative estimates and report nonpositive/nonfinite inputs explicitly.
+
+A zero-amplitude constrained optimum also leaves ADC unidentified. Nonpositive ordered prefixes of the moment scores `mean(magnitude²)/2 - sigma²` certify that null fit using the Bessel bound `log I0(z) <= z²/4` and Abel summation. For two b-values this zero-amplitude certificate is exact; for more b-values it is sufficient. A fitted-D conditional moment check additionally rejects candidates whose conditional amplitude optimum is zero. Report certified null fits as S0=0, invalid ADC, and successful analytic convergence. No arbitrary amplitude floor converts a tiny numerical S0 into an identified ADC.
 
 ## Metrics and known-change recovery
 

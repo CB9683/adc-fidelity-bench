@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "seed": 2026,
+  "anatomy_ids": ["toy-000", "toy-001", "toy-002", "toy-003", "toy-004", "toy-005"],
+  "split_counts": {"train": 1, "validation": 1, "calibration": 2, "test": 2},
+  "evaluation_splits": ["test"],
+  "fine_shape": [16, 16],
+  "fine_spacing_mm": 0.5,
+  "partial_volume_factor": 2,
+  "b_values": [0, 1000],
+  "budgets": [1, 2, 4, 8],
+  "snr": [5, 20],
+  "focal_radius_mm": [0.5, 1.5],
+  "delta_adc": [-0.0003, 0.0003],
+  "focal_shapes": ["circle"],
+  "noise_realizations": 2,
+  "paired_noise": "common",
+  "methods": ["average_log", "rician_mle"],
+  "rician_maxiter": 200,
+  "recovery_epsilon": 1e-8
+}

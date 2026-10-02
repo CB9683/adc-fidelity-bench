@@ -8,9 +8,19 @@ version = "0.1.0.dev0"
 description = "Simulation benchmark for trustworthy ADC estimation with fewer diffusion acquisitions"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "numpy>=2.0,<3",
+    "scipy>=1.15,<2",
+    "matplotlib>=3.10,<4",
+]
 license = "MIT"
 license-files = ["LICENSE"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+adc-fidelity-bench = "adc_fidelity_bench.cli:main"
 
 [project.urls]
 Repository = "https://github.com/CB9683/adc-fidelity-bench"

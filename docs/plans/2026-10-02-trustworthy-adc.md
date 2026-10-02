@@ -14,6 +14,10 @@
 
 This replaces the generic plan. The initial folder contained the starter; the earlier turn added only that plan. The updated objective and two-stage design are fixed. Preserve the starter and keep it out of Git.
 
+## Implementation progress, 2026-10-02
+
+Phase 0 is complete and the repository is public. Phase 1's CPU geometric simulation/conventional-baseline milestone and Phase 2's ADC/focal/regional metrics are implemented under the [detailed CPU plan](2026-10-02-cpu-simulation-pilot.md). The pilot does not train or calibrate a model. Published denoising, unfamiliar-regime studies, calibrated sequential stopping, learned methods, and approved real-data work remain subsequent phases. See [measured pilot results](../PILOT_RESULTS.md).
+
 ## Phase 0: Safe scaffold and protocol proposal — authorized now
 
 ### Task 1: Correct the scientific documentation
