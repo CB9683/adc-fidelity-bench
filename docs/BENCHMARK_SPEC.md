@@ -1,6 +1,6 @@
 # Controlled simulation and quantitative evaluation
 
-Status: CPU simulation/conventional-baseline pilot and the first small CNN experiment implemented and independently reviewed, 2026-10-02. The CNN evaluated prespecified unfamiliar ellipses and both noise pairings on 32 new test geometries; it reduced tissue RMSE while attenuating focal changes. Broader denoising, anatomical/acquisition shifts, uncertainty and stopping remain proposed. `configs/pilot.json` and `configs/first_cnn.json` are executable; the broader example configuration remains incomplete. Results are recorded separately in [PILOT_RESULTS.md](PILOT_RESULTS.md) and [FIRST_CNN_RESULTS.md](FIRST_CNN_RESULTS.md).
+Status: CPU simulation/conventional-baseline pilot, first small CNN and controlled four-cell focal-preservation study implemented and independently reviewed, 2026-10-02. The first CNN reduced tissue RMSE while attenuating focal changes. The follow-up uses fresh groups to cross spatial context with paired-change supervision, adding varied numerical tissue/location and zero-change controls. Broader denoising, anatomical/acquisition shifts, uncertainty and stopping remain proposed. `configs/pilot.json`, `configs/first_cnn.json` and `configs/focal_ablation.json` are executable; the broader example configuration remains incomplete. Results are recorded separately in [PILOT_RESULTS.md](PILOT_RESULTS.md), [FIRST_CNN_RESULTS.md](FIRST_CNN_RESULTS.md) and [FOCAL_PRESERVATION_RESULTS.md](FOCAL_PRESERVATION_RESULTS.md).
 
 ## Simulation and reference
 
@@ -22,7 +22,7 @@ Coarse tissue/focal evaluation masks include every voxel with a positive fine-re
 
 ## Conventional baselines
 
-The first learned-method milestone uses the following conventional estimators unchanged, at four repetitions per b-value. Its observed-input, supervised-target and validation-selection contracts are in [FIRST_CNN_METHOD.md](FIRST_CNN_METHOD.md).
+Both learned studies use the following conventional estimators unchanged, at four repetitions per b-value. Their observed-input, supervised-target and validation-selection contracts are in [FIRST_CNN_METHOD.md](FIRST_CNN_METHOD.md) and [FOCAL_PRESERVATION_METHOD.md](FOCAL_PRESERVATION_METHOD.md). The latter selects all four cells by the same composite validation score and uses independent paired noise as primary, with common noise as a sensitivity control.
 
 - Average magnitude repetitions separately at each b-value, then fit ADC. With positive signals at two distinct b-values, `D = log(S(b1)/S(b2)) / (b2-b1)`. Explicitly report invalid signals, negative estimates, masks, exclusions, and constraints; avoid silent clipping.
 - Fit repetition-level signals under the simulated magnitude-noise law; document noise-scale knowledge/estimation and convergence. A magnitude average does not generally retain the single-repetition noise law.

@@ -1,6 +1,6 @@
 # Focal preservation: frozen four-cell study
 
-This study crosses learned spatial context with the supervised training objective. It follows the [first CNN's measured focal attenuation](FIRST_CNN_RESULTS.md) and keeps the original experiment unchanged. The [executable configuration](../configs/focal_ablation.json) and [implementation plan](plans/2026-10-02-focal-preservation.md) specify all choices before final evaluation. Improvement is a hypothesis, not an assumed outcome.
+This study crosses learned spatial context with the supervised training objective. It follows the [first CNN's measured focal attenuation](FIRST_CNN_RESULTS.md) and keeps the original experiment unchanged. The [executable configuration](../configs/focal_ablation.json) and [implementation plan](plans/2026-10-02-focal-preservation.md) specified all choices before final evaluation. The frozen study has now been executed; see [measured results](FOCAL_PRESERVATION_RESULTS.md). Improvement was a hypothesis, not an assumed outcome.
 
 ## Four matched comparisons
 

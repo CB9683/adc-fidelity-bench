@@ -86,7 +86,7 @@ Learning a spatial prior and minimizing whole-tissue MSE are plausible explanati
 
 There is no uncertainty calibration, adaptive stopping, repetition reduction, patient/anatomical-resource validation or clinical claim. Three optimization seeds are not three independent cohorts. The summaries are descriptive; no cohort confidence interval or rare-failure guarantee is claimed.
 
-The next scientific step is to prespecify richer training/validation variants and a comparison that tests focal preservation, including a compatible published denoiser. Any revised method needs new final-test groups because this test set has now been inspected. Calibration/stopping remains a separate milestone and cannot be inferred from these finite predictions.
+The proposed richer training/validation variants and controlled focal-preservation comparison are now implemented in the [four-cell follow-up](FOCAL_PRESERVATION_METHOD.md), using fresh geometry groups; its [results](FOCAL_PRESERVATION_RESULTS.md) remain separate from this historical experiment. A compatible published denoiser is still pending. Any further method revision needs new final-test groups once its evaluation set has been inspected. Calibration/stopping remains a separate milestone and cannot be inferred from these finite predictions.
 
 ## Artifacts, provenance and verification
 

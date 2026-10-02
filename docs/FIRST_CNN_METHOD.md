@@ -32,7 +32,7 @@ Report ADC bias/MAE/RMSE, focal and nonfocal ADC errors, signed paired focal rec
 
 The fixed central focal design and limited two-tissue geometric family allow strong spatial priors. Shape holdout remains within that family; it is not a realistic anatomical or acquisition shift. MSE can favour prior-driven estimates that suppress a small real change. The experiment is designed to expose that possibility. A finite positive CNN output is not an identification diagnostic, an uncertainty bound or evidence that fewer acquisitions are safe. No patient/anatomical-resource, clinical or prospective scanner-time claim follows.
 
-Published-denoiser comparison, more varied anatomy/lesion locations and acquisition regimes, and independent uncertainty calibration/stopping remain later work. This first CNN is a transparent research-software milestone, not a settled publication contribution.
+The [four-cell follow-up](FOCAL_PRESERVATION_METHOD.md) now implements varied numerical tissue values/focal locations and a controlled spatial-context × paired-change-objective comparison on fresh groups; see its [results](FOCAL_PRESERVATION_RESULTS.md). Published-denoiser comparison, external anatomical resources, broader acquisition regimes and independent uncertainty calibration/stopping remain later work. This first CNN is a transparent research-software milestone, not a settled publication contribution.
 
 ## Reproduce
 

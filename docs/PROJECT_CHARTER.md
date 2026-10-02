@@ -1,6 +1,6 @@
 # Project charter
 
-Status: benchmark objective and broader protocol, 2026-10-02. The conventional numerical pilot and first small CNN are implemented; their settings were frozen before final evaluation. The [CNN results](FIRST_CNN_RESULTS.md) show lower tissue error alongside focal attenuation. Published denoising, broader anatomical/acquisition regimes, calibrated uncertainty and adaptive stopping remain planned.
+Status: benchmark objective and broader protocol, 2026-10-02. The conventional numerical pilot, first small CNN and controlled four-cell focal-preservation study are implemented under frozen settings. The [first-CNN results](FIRST_CNN_RESULTS.md) show lower tissue error alongside focal attenuation; the follow-up crosses spatial context with paired-change supervision on fresh groups, with [method](FOCAL_PRESERVATION_METHOD.md) and [results](FOCAL_PRESERVATION_RESULTS.md) recorded separately. Published denoising, broader anatomical/acquisition regimes, calibrated uncertainty and adaptive stopping remain planned.
 
 ## Objective and contribution
 
@@ -26,7 +26,7 @@ Monoexponential ADC fitting and preservation of b-values and ADC units/scaling a
 
 ## Baselines and endpoints
 
-Compare fixed-budget averaging followed by fitting, repetition-level fitting under an explicit noise law, relevant published denoising, and a small learned method. Averaging, known-sigma Rician fitting and the first CNN are implemented; published denoising remains planned. Give comparators identical acquisition availability and evaluation regions, and declare information advantages such as known simulated sigma. Budget each b-value explicitly.
+Compare fixed-budget averaging followed by fitting, repetition-level fitting under an explicit noise law, relevant published denoising, and learned ADC estimation. Averaging, known-sigma Rician fitting, the first CNN and the four-cell architecture/objective comparison are implemented; published denoising remains planned. Give comparators identical acquisition availability and evaluation regions, and declare information advantages such as known simulated sigma. Budget each b-value explicitly.
 
 Primary endpoints: ADC bias/error, focal-change recovery/attenuation, uncertainty coverage/calibration, selective risk, false confidence, and repetitions saved at matched error tolerance and risk. Report boundaries across SNR, size, contrast, and acquisition count. Image-quality metrics are supporting measures.
 

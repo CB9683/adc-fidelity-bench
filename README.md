@@ -10,6 +10,8 @@ The first CPU pilot implements original geometric phantoms, signal-level partial
 
 The first small CNN is now trained: 2,641 parameters, three optimization seeds, and 32 held-out numerical geometry groups. It reduced tissue ADC RMSE, but mean signed focal recovery was only 23–30% at SNR5 and 49–55% at SNR20 for familiar circles under common noise. This is evidence that lower global error can conceal focal attenuation. See the [CNN method](docs/FIRST_CNN_METHOD.md) and [measured results](docs/FIRST_CNN_RESULTS.md).
 
+The follow-up four-cell study is complete: spatial versus pointwise architectures crossed with tissue-MSE versus tissue-plus-paired-change training. All 12 models use fresh geometry groups, matched observations and the same validation-selection score. Within this matched comparison, removing spatial mixing improved low-SNR recovery at the cost of tissue error and null alarms; the change loss gave modest, mixed gains. All cells still attenuated focal changes. Varied tissue values/focal locations and zero-change controls extend the numerical design; independent paired noise is primary and common noise is a sensitivity control. See the [frozen method](docs/FOCAL_PRESERVATION_METHOD.md) and [results](docs/FOCAL_PRESERVATION_RESULTS.md).
+
 The original conventional pilot used two held-out toy anatomies; see its [results and limitations](docs/PILOT_RESULTS.md). Published denoising comparators, anatomical-resource experiments, calibrated uncertainty, and adaptive stopping remain to be implemented. No patient or external anatomical datasets have been downloaded.
 
 The confirmed repository name is `CB9683/adc-fidelity-bench`. The code uses the [MIT license](LICENSE); dataset and other asset permissions remain separate. [Citation metadata](CITATION.cff) initially identifies the owner by the GitHub handle `CB9683`; fuller authorship and release metadata can be added before a research release.
@@ -18,7 +20,7 @@ The confirmed repository name is `CB9683/adc-fidelity-bench`. The code uses the 
 
 1. Controlled simulations with known parameters and focal abnormalities; start with `S(b) = S0 exp(-bD)`.
 2. Partial volume applied to diffusion signals, and complex noise before magnitude formation.
-3. Quantitative comparisons of averaging plus fitting, noise-aware fitting and a small learned method; published denoising remains planned.
+3. Quantitative comparisons of averaging plus fitting, noise-aware fitting and learned ADC estimation, including a spatial-context × training-objective comparison; published denoising remains planned.
 4. ADC error, focal-change recovery, uncertainty calibration, false confidence, and repetitions saved at matched error risk.
 5. Optional fastMRI Prostate retrospective validation after access approval, with independent input/reference repetitions and a noisy-reference interpretation.
 
@@ -62,11 +64,24 @@ For other supported environments, install the `dev,train` extras and record the 
 
 Outputs include losses, selected checkpoints, config/source/checkpoint hashes, group assignments, matched conventional/CNN comparisons and quantitative plots. Read the [method and full reproduction instructions](docs/FIRST_CNN_METHOD.md) and [measured fidelity limitations](docs/FIRST_CNN_RESULTS.md) before interpreting finite predictions as trustworthy measurements.
 
+## Run the four-cell focal-preservation study
+
+Use the same learning environment. The development diagnosis uses only the first CNN's original validation groups, under noiseless and SNR100 conditions; it requires the locally preserved first-run checkpoints. The four-cell experiment is independently reproducible without those checkpoints:
+
+```sh
+.venv/bin/python -m adc_fidelity_bench diagnose-cnn --reference-run outputs/first-cnn --output outputs/first-cnn-development
+.venv/bin/python -m adc_fidelity_bench ablate-cnn --config configs/focal_ablation.json --output outputs/focal-ablation
+```
+
+Both commands require fresh output directories. The ablation trains spatial (2,641 parameters) and pointwise (2,647 parameters) models under two objectives, with three optimization seeds per cell. Each of the 12 checkpoints is selected by the same validation tissue MSE + 1.0×paired focal-change MSE, then reloaded before final evaluation. Its new 64/16/32/32 split supplies 2,560 training pairs, 640 validation pairs and 32 independent test geometry groups; reserved calibration acquisitions remain unused.
+
+The [method](docs/FOCAL_PRESERVATION_METHOD.md) defines signed-change and zero-change controls, matched conventional comparisons, grouped aggregation and failure denominators. The [results](docs/FOCAL_PRESERVATION_RESULTS.md) distinguish the validation-only diagnosis from final testing. The benchmark null-alarm threshold is not a clinical threshold, calibrated confidence or an adaptive-stopping rule. Keep raw outputs and checkpoints locally.
+
 ## Repository layout
 
 ```text
-src/adc_fidelity_bench/  Simulation, estimators, CNN training, metrics, CLI, reporting
-configs/                Executable pilot/CNN experiments and protocol template
+src/adc_fidelity_bench/  Simulation, estimators, learning/diagnostics, metrics, CLI, reporting
+configs/                Executable pilot/CNN/four-cell experiments and protocol template
 tests/                  Numerical, integration, and data-boundary tests
 docs/                   Protocol, data boundaries, sources, and plans
 pyproject.toml          Package/build specification
@@ -82,4 +97,4 @@ Real data, anatomical downloads, local manifests, checkpoints, and generated run
 
 Keep each anatomy and all its noise realizations, perturbations, slices, and acquisition variants in one split. Separate training, model selection, calibration, and final testing. Record configurations, manifests, seeds, versions, and exclusions.
 
-The initial evidence is numerical simulation; later patient work would measure retrospective agreement. This pilot does not establish clinical validity, prospective scanner-time savings, brain-tumour performance, or biological interpretation. It supplies no calibrated error bound and cannot decide when acquisitions are sufficient. Before release, inspect staged content and complete Git history and resolve asset permissions.
+The initial evidence is numerical simulation; later patient work would measure retrospective agreement. These experiments do not establish clinical validity, prospective scanner-time savings, brain-tumour performance, or biological interpretation. They supply no calibrated error bound and cannot decide when acquisitions are sufficient. Before release, inspect staged content and complete Git history and resolve asset permissions.
